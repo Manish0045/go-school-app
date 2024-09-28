@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "688143166946",
+    "project_id": "go-school-pms",
+    "storage_bucket": "go-school-pms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688143166946:android:2aaddf9f1f5887de525dbb",
+        "android_client_info": {
+          "package_name": "com.example.go_school_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMkdKeQJbcTN6ZsgwFp31yM9i7UVkDRlw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
