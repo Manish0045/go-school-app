@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:go_school_application/constants/constant_colors.dart';
 import 'package:go_school_application/screens/profile/profile_screen.dart';
+import 'package:go_school_application/screens/teacher/quiz_screen.dart';
 import 'package:go_school_application/screens/teacher/student_list_screen.dart';
 import 'package:go_school_application/widgets/mark_attendance.dart';
 
@@ -32,7 +32,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
           children: [
             MarkAttendance(),
             StudentListPage(),
-            ReportsPage(),
+            QuizFormPage(),
             ProfileScreen(),
           ],
         ),
@@ -46,48 +46,6 @@ class _TeacherScreenState extends State<TeacherScreen> {
             // print('Clicked tab $index');
           },
         ),
-      ),
-    );
-  }
-}
-
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Dashboard Page',
-        style: TextStyle(color: textColor),
-      ),
-    );
-  }
-}
-
-class UsersPage extends StatelessWidget {
-  const UsersPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Users Page',
-        style: TextStyle(color: textColor),
-      ),
-    );
-  }
-}
-
-class ReportsPage extends StatelessWidget {
-  const ReportsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Reports Page',
-        style: TextStyle(color: textColor),
       ),
     );
   }
