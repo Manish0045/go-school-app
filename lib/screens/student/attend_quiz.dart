@@ -1,6 +1,8 @@
 // screens/student/attend_quiz.dart
 import 'package:flutter/material.dart';
+import 'package:go_school_application/constants/constant_colors.dart';
 import 'package:go_school_application/models/quiz_model.dart';
+import 'package:go_school_application/screens/student/student_screen.dart';
 import 'package:go_school_application/services/quiz_services.dart';
 import 'package:go_school_application/widgets/common_widgets.dart';
 
@@ -94,7 +96,7 @@ class _AttendQuizPageState extends State<AttendQuizPage> {
           const SizedBox(height: 20),
           Text(
             currentQuestion.question,
-            style: const TextStyle(fontSize: 18, color: Colors.black),
+            style: const TextStyle(fontSize: 18, color: textColor),
           ),
           const SizedBox(height: 20),
           ...currentQuestion.options.map((option) {
@@ -105,7 +107,10 @@ class _AttendQuizPageState extends State<AttendQuizPage> {
                   backgroundColor: _getButtonColor(option),
                 ),
                 onPressed: isAnswered ? null : () => _submitAnswer(option),
-                child: Text(option),
+                child: Text(
+                  option,
+                  style: TextStyle(color: textColor),
+                ),
               ),
             );
           }),
@@ -143,14 +148,12 @@ class _AttendQuizPageState extends State<AttendQuizPage> {
             const Text(
               'Quiz Completed!',
               style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple),
+                  fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
             ),
             const SizedBox(height: 20),
             Text(
               'Your Score: $score/${selectedQuestions.length}',
-              style: const TextStyle(fontSize: 20, color: Colors.black),
+              style: const TextStyle(fontSize: 20, color: textColor),
             ),
             const SizedBox(height: 40),
             ElevatedButton(
@@ -168,7 +171,8 @@ class _AttendQuizPageState extends State<AttendQuizPage> {
             ),
             const SizedBox(height: 15),
             ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => StudentScreen())),
               child: const Text('Back to HomePage'),
             ),
           ],

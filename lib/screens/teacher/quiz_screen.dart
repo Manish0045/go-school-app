@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_school_application/constants/constant_colors.dart';
 import 'package:go_school_application/models/quiz_model.dart';
 import 'package:go_school_application/services/quiz_services.dart';
 import 'package:go_school_application/widgets/common_widgets.dart';
@@ -14,7 +15,6 @@ class _AddQuizPageState extends State<AddQuizPage> {
   final _formKey = GlobalKey<FormState>();
   final _quizService = QuizService();
 
-  // Text controllers for the quiz fields
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _option1Controller = TextEditingController();
   final TextEditingController _option2Controller = TextEditingController();
@@ -26,13 +26,21 @@ class _AddQuizPageState extends State<AddQuizPage> {
 
   @override
   void dispose() {
-    // Dispose the controllers to avoid memory leaks
     _questionController.dispose();
     _option1Controller.dispose();
     _option2Controller.dispose();
     _option3Controller.dispose();
     _option4Controller.dispose();
     super.dispose();
+  }
+
+  List<String> _getValidOptions() {
+    return [
+      _option1Controller.text,
+      _option2Controller.text,
+      _option3Controller.text,
+      _option4Controller.text,
+    ].where((option) => option.isNotEmpty).toList();
   }
 
   Future<void> _submitForm() async {
@@ -60,7 +68,7 @@ class _AddQuizPageState extends State<AddQuizPage> {
           const SnackBar(content: Text('Quiz added successfully!')),
         );
 
-        _clearForm();
+        _clearForm(); // This clears the form fields
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error adding quiz: $e')),
@@ -81,6 +89,7 @@ class _AddQuizPageState extends State<AddQuizPage> {
     _option4Controller.clear();
     _correctAnswer = null;
     _formKey.currentState!.reset();
+    setState(() {});
   }
 
   @override
@@ -98,7 +107,10 @@ class _AddQuizPageState extends State<AddQuizPage> {
                 decoration: const InputDecoration(
                   labelText: 'Question',
                   border: OutlineInputBorder(),
+                  focusColor: Colors.amber,
                 ),
+                style:
+                    const TextStyle(color: textColor), // Change text color here
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a question';
@@ -113,11 +125,16 @@ class _AddQuizPageState extends State<AddQuizPage> {
                   labelText: 'Option 1',
                   border: OutlineInputBorder(),
                 ),
+                style:
+                    const TextStyle(color: textColor), // Change text color here
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter option 1';
                   }
                   return null;
+                },
+                onChanged: (value) {
+                  setState(() {});
                 },
               ),
               const SizedBox(height: 16),
@@ -127,11 +144,16 @@ class _AddQuizPageState extends State<AddQuizPage> {
                   labelText: 'Option 2',
                   border: OutlineInputBorder(),
                 ),
+                style:
+                    const TextStyle(color: textColor), // Change text color here
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter option 2';
                   }
                   return null;
+                },
+                onChanged: (value) {
+                  setState(() {});
                 },
               ),
               const SizedBox(height: 16),
@@ -141,11 +163,16 @@ class _AddQuizPageState extends State<AddQuizPage> {
                   labelText: 'Option 3',
                   border: OutlineInputBorder(),
                 ),
+                style:
+                    const TextStyle(color: textColor), // Change text color here
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter option 3';
                   }
                   return null;
+                },
+                onChanged: (value) {
+                  setState(() {});
                 },
               ),
               const SizedBox(height: 16),
@@ -155,11 +182,15 @@ class _AddQuizPageState extends State<AddQuizPage> {
                   labelText: 'Option 4',
                   border: OutlineInputBorder(),
                 ),
+                style: const TextStyle(color: textColor),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter option 4';
                   }
                   return null;
+                },
+                onChanged: (value) {
+                  setState(() {});
                 },
               ),
               const SizedBox(height: 16),
@@ -169,15 +200,13 @@ class _AddQuizPageState extends State<AddQuizPage> {
                   border: OutlineInputBorder(),
                 ),
                 value: _correctAnswer,
-                items: [
-                  _option1Controller.text,
-                  _option2Controller.text,
-                  _option3Controller.text,
-                  _option4Controller.text,
-                ].map((option) {
+                items: _getValidOptions().map((option) {
                   return DropdownMenuItem<String>(
                     value: option,
-                    child: Text(option),
+                    child: Text(
+                      option,
+                      style: TextStyle(color: textColor),
+                    ),
                   );
                 }).toList(),
                 onChanged: (value) {
