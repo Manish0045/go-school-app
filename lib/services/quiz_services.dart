@@ -1,22 +1,26 @@
 // services/quiz_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/quiz_model.dart';
+import 'package:go_school_application/models/quiz_model.dart';
 
-class QuizServices {
-  final CollectionReference quizCollection =
-      FirebaseFirestore.instance.collection('quizzes');
+class QuizService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Create a new quiz
-  Future<void> createQuiz(QuizModel quiz) async {
-    await quizCollection.add(quiz.toMap());
+  Future<List<Quiz>> fetchQuizzes() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('quizzes').get();
+      return snapshot.docs.map((doc) {
+        return Quiz.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    } catch (e) {
+      throw Exception('Error fetching quizzes: $e');
+    }
   }
 
-  // Get quizzes
-  Stream<List<QuizModel>> getQuizzes() {
-    return quizCollection.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return QuizModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-      }).toList();
-    });
+  Future<void> addQuiz(Quiz quiz) async {
+    try {
+      await _firestore.collection('quizzes').add(quiz.toMap());
+    } catch (e) {
+      throw Exception('Error adding quiz: $e');
+    }
   }
 }

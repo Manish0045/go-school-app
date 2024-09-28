@@ -1,129 +1,208 @@
-// screens/teacher/quiz_form.dart
 import 'package:flutter/material.dart';
+import 'package:go_school_application/models/quiz_model.dart';
 import 'package:go_school_application/services/quiz_services.dart';
-import '../../models/quiz_model.dart';
+import 'package:go_school_application/widgets/common_widgets.dart';
 
-class QuizFormPage extends StatefulWidget {
-  const QuizFormPage({Key? key}) : super(key: key);
+class AddQuizPage extends StatefulWidget {
+  const AddQuizPage({super.key});
 
   @override
-  _QuizFormPageState createState() => _QuizFormPageState();
+  State<AddQuizPage> createState() => _AddQuizPageState();
 }
 
-class _QuizFormPageState extends State<QuizFormPage> {
+class _AddQuizPageState extends State<AddQuizPage> {
   final _formKey = GlobalKey<FormState>();
-  String _title = '';
-  List<Question> _questions = [];
+  final _quizService = QuizService();
 
-  final _titleController = TextEditingController();
+  // Text controllers for the quiz fields
+  final TextEditingController _questionController = TextEditingController();
+  final TextEditingController _option1Controller = TextEditingController();
+  final TextEditingController _option2Controller = TextEditingController();
+  final TextEditingController _option3Controller = TextEditingController();
+  final TextEditingController _option4Controller = TextEditingController();
 
-  void _addQuestion() {
-    setState(() {
-      _questions.add(
-        Question(
-          questionText: '',
-          options: ['', '', '', ''],
-          correctOptionIndex: 0,
-        ),
-      );
-    });
+  String? _correctAnswer;
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    // Dispose the controllers to avoid memory leaks
+    _questionController.dispose();
+    _option1Controller.dispose();
+    _option2Controller.dispose();
+    _option3Controller.dispose();
+    _option4Controller.dispose();
+    super.dispose();
   }
 
-  void _saveQuiz() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      QuizModel newQuiz = QuizModel(title: _title, questions: _questions);
-      QuizServices().createQuiz(newQuiz);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Quiz created successfully')),
-      );
-      Navigator.pop(context);
+      setState(() {
+        _isSubmitting = true;
+      });
+
+      try {
+        final quiz = Quiz(
+          id: '',
+          question: _questionController.text,
+          options: [
+            _option1Controller.text,
+            _option2Controller.text,
+            _option3Controller.text,
+            _option4Controller.text,
+          ],
+          correctAnswer: _correctAnswer!,
+        );
+
+        await _quizService.addQuiz(quiz);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Quiz added successfully!')),
+        );
+
+        _clearForm();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error adding quiz: $e')),
+        );
+      } finally {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
+  }
+
+  void _clearForm() {
+    _questionController.clear();
+    _option1Controller.clear();
+    _option2Controller.clear();
+    _option3Controller.clear();
+    _option4Controller.clear();
+    _correctAnswer = null;
+    _formKey.currentState!.reset();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Quiz')),
+      appBar: MyAppBar(title: "Add Quiz"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
               TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Quiz Title'),
+                controller: _questionController,
+                decoration: const InputDecoration(
+                  labelText: 'Question',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a quiz title';
+                    return 'Please enter a question';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  _title = value!;
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _option1Controller,
+                decoration: const InputDecoration(
+                  labelText: 'Option 1',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter option 1';
+                  }
+                  return null;
                 },
               ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _questions.length,
-                  itemBuilder: (context, index) {
-                    return _buildQuestionForm(index);
-                  },
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _option2Controller,
+                decoration: const InputDecoration(
+                  labelText: 'Option 2',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter option 2';
+                  }
+                  return null;
+                },
               ),
-              ElevatedButton(
-                onPressed: _addQuestion,
-                child: const Text('Add Question'),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _option3Controller,
+                decoration: const InputDecoration(
+                  labelText: 'Option 3',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter option 3';
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _option4Controller,
+                decoration: const InputDecoration(
+                  labelText: 'Option 4',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter option 4';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Correct Answer',
+                  border: OutlineInputBorder(),
+                ),
+                value: _correctAnswer,
+                items: [
+                  _option1Controller.text,
+                  _option2Controller.text,
+                  _option3Controller.text,
+                  _option4Controller.text,
+                ].map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _correctAnswer = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select the correct answer';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _saveQuiz,
-                child: const Text('Save Quiz'),
+                onPressed: _isSubmitting ? null : _submitForm,
+                child: _isSubmitting
+                    ? const CircularProgressIndicator()
+                    : const Text('Submit'),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildQuestionForm(int index) {
-    return Column(
-      children: [
-        TextFormField(
-          decoration: const InputDecoration(labelText: 'Question'),
-          onChanged: (value) {
-            _questions[index].questionText = value;
-          },
-        ),
-        for (int i = 0; i < 4; i++)
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Option ${i + 1}'),
-            onChanged: (value) {
-              _questions[index].options[i] = value;
-            },
-          ),
-        DropdownButtonFormField<int>(
-          value: _questions[index].correctOptionIndex,
-          decoration: const InputDecoration(labelText: 'Correct Option'),
-          items: List.generate(
-            4,
-            (i) => DropdownMenuItem<int>(
-              value: i,
-              child: Text('Option ${i + 1}'),
-            ),
-          ),
-          onChanged: (value) {
-            setState(() {
-              _questions[index].correctOptionIndex = value!;
-            });
-          },
-        ),
-        const SizedBox(height: 20),
-      ],
     );
   }
 }

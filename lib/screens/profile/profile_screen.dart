@@ -129,8 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ElevatedButton(
                 onPressed: () {
                   // Student-specific action
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => QuizPage()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AttendQuizPage()));
                 },
                 child: const Text('Take Quizzes'),
               ),

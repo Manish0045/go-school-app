@@ -32,7 +32,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
           children: [
             MarkAttendance(),
             StudentListPage(),
-            QuizFormPage(),
+            AddQuizPage(),
             ProfileScreen(),
           ],
         ),
@@ -43,7 +43,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
               TabItem(icon: entry.value, title: entry.key),
           ],
           onTap: (index) {
-            // print('Clicked tab $index');
+            print(index);
           },
         ),
       ),

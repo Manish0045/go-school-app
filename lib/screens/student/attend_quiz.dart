@@ -1,57 +1,43 @@
+// screens/student/attend_quiz.dart
 import 'package:flutter/material.dart';
-import 'package:go_school_application/constants/constant_colors.dart';
-import 'package:go_school_application/screens/student/student_screen.dart';
+import 'package:go_school_application/models/quiz_model.dart';
+import 'package:go_school_application/services/quiz_services.dart';
 import 'package:go_school_application/widgets/common_widgets.dart';
 
-class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+class AttendQuizPage extends StatefulWidget {
+  const AttendQuizPage({super.key});
 
   @override
-  State<QuizPage> createState() => _QuizPageState();
+  State<AttendQuizPage> createState() => _AttendQuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _AttendQuizPageState extends State<AttendQuizPage> {
   int currentQuestionIndex = 0;
   int score = 0;
   bool isQuizFinished = false;
   bool isAnswered = false;
   String? selectedOption;
-  List<Question> selectedQuestions = [];
+  List<Quiz> selectedQuestions = [];
 
-  // Predefined questions and options with the correct answer
-  final List<Question> allQuestions = [
-    Question(
-        text: 'What is the capital of France?',
-        options: ['Berlin', 'Madrid', 'Paris', 'Lisbon'],
-        correctAnswer: 'Paris'),
-    Question(
-        text: 'Who developed the theory of relativity?',
-        options: ['Newton', 'Einstein', 'Tesla', 'Curie'],
-        correctAnswer: 'Einstein'),
-    Question(
-        text: 'What is the largest planet in our solar system?',
-        options: ['Earth', 'Mars', 'Jupiter', 'Saturn'],
-        correctAnswer: 'Jupiter'),
-    Question(
-        text: 'Who painted the Mona Lisa?',
-        options: ['Van Gogh', 'Picasso', 'Da Vinci', 'Rembrandt'],
-        correctAnswer: 'Da Vinci'),
-    Question(
-        text: 'What is the chemical symbol for water?',
-        options: ['O2', 'H2', 'CO2', 'H2O'],
-        correctAnswer: 'H2O'),
-    // Add more questions as needed...
-  ];
+  final QuizService _quizService = QuizService();
 
   @override
   void initState() {
     super.initState();
-    _generateRandomQuestions();
+    _loadQuizQuestions();
   }
 
-  void _generateRandomQuestions() {
-    // Randomly select 10 questions from the predefined list
-    selectedQuestions = (allQuestions.toList()..shuffle()).take(10).toList();
+  Future<void> _loadQuizQuestions() async {
+    try {
+      List<Quiz> quizzes = await _quizService.fetchQuizzes();
+      setState(() {
+        selectedQuestions = quizzes
+          ..shuffle(); // Shuffle and use first 10 questions
+        selectedQuestions = selectedQuestions.take(10).toList();
+      });
+    } catch (e) {
+      print('Failed to load quizzes: $e');
+    }
   }
 
   void _submitAnswer(String selectedOption) {
@@ -59,7 +45,6 @@ class _QuizPageState extends State<QuizPage> {
       isAnswered = true;
       this.selectedOption = selectedOption;
 
-      // Check if the selected option is correct
       if (selectedOption ==
           selectedQuestions[currentQuestionIndex].correctAnswer) {
         score++;
@@ -81,29 +66,20 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  Color _getButtonColor(String option) {
-    if (!isAnswered) {
-      return Colors.blueAccent; // Default color when no answer is selected
-    } else if (option ==
-        selectedQuestions[currentQuestionIndex].correctAnswer) {
-      return Colors.green; // Green for the correct answer
-    } else if (option == selectedOption) {
-      return Colors.red; // Red for the selected wrong answer
-    } else {
-      return Colors.blueAccent; // Blue for other options after answering
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(title: "Attend Quiz"),
-      body: isQuizFinished ? _buildQuizResults() : _buildQuizQuestion(),
+      body: selectedQuestions.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : isQuizFinished
+              ? _buildQuizResults()
+              : _buildQuizQuestion(),
     );
   }
 
   Widget _buildQuizQuestion() {
-    Question currentQuestion = selectedQuestions[currentQuestionIndex];
+    Quiz currentQuestion = selectedQuestions[currentQuestionIndex];
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -113,23 +89,20 @@ class _QuizPageState extends State<QuizPage> {
           Text(
             'Question ${currentQuestionIndex + 1}/${selectedQuestions.length}',
             style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: amberTextColor),
+                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.amber),
           ),
           const SizedBox(height: 20),
           Text(
-            currentQuestion.text,
-            style: const TextStyle(fontSize: 18, color: textColor),
+            currentQuestion.question,
+            style: const TextStyle(fontSize: 18, color: Colors.black),
           ),
           const SizedBox(height: 20),
           ...currentQuestion.options.map((option) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(0, 23, 38, 244),
-                  // Set button color based on selection
+                  backgroundColor: _getButtonColor(option),
                 ),
                 onPressed: isAnswered ? null : () => _submitAnswer(option),
                 child: Text(option),
@@ -141,10 +114,23 @@ class _QuizPageState extends State<QuizPage> {
             ElevatedButton(
               onPressed: _nextQuestion,
               child: const Text('Next'),
-            )
+            ),
         ],
       ),
     );
+  }
+
+  Color _getButtonColor(String option) {
+    if (!isAnswered) {
+      return Colors.blueAccent;
+    } else if (option ==
+        selectedQuestions[currentQuestionIndex].correctAnswer) {
+      return Colors.green;
+    } else if (option == selectedOption) {
+      return Colors.red;
+    } else {
+      return Colors.blueAccent;
+    }
   }
 
   Widget _buildQuizResults() {
@@ -154,9 +140,9 @@ class _QuizPageState extends State<QuizPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Quiz Completed!',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple),
@@ -164,45 +150,30 @@ class _QuizPageState extends State<QuizPage> {
             const SizedBox(height: 20),
             Text(
               'Your Score: $score/${selectedQuestions.length}',
-              style: const TextStyle(fontSize: 20, color: textColor),
+              style: const TextStyle(fontSize: 20, color: Colors.black),
             ),
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  // Reset quiz
                   currentQuestionIndex = 0;
                   score = 0;
                   isQuizFinished = false;
                   isAnswered = false;
                   selectedOption = null;
-                  _generateRandomQuestions();
+                  _loadQuizQuestions();
                 });
               },
               child: const Text('Restart Quiz'),
             ),
-            SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             ElevatedButton(
-                onPressed: () => Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => StudentScreen())),
-                child: Text("Back to HomePage"))
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Back to HomePage'),
+            ),
           ],
         ),
       ),
     );
   }
-}
-
-class Question {
-  final String text;
-  final List<String> options;
-  final String correctAnswer;
-
-  Question({
-    required this.text,
-    required this.options,
-    required this.correctAnswer,
-  });
 }

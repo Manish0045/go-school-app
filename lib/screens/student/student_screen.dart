@@ -32,7 +32,7 @@ class _StudentScreenState extends State<StudentScreen> {
           children: [
             MarkAttendance(),
             AttendanceReportPage(),
-            QuizPage(),
+            AttendQuizPage(),
             ProfileScreen(),
           ],
         ),
