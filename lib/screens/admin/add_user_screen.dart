@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_school_application/constants/constant_colors.dart';
 import 'package:go_school_application/models/user_model.dart';
 import 'package:go_school_application/services/auth_services.dart';
 import 'package:go_school_application/services/user_services.dart';
@@ -65,7 +66,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
     _qualificationController.clear();
     _adminEmployeeIdController.clear();
 
-    // Optionally reset the role to the default value.
     setState(() {
       _selectedRole = "Student";
     });
@@ -77,20 +77,17 @@ class _AddUserScreenState extends State<AddUserScreen> {
     });
 
     try {
-      // Register user with Firebase Auth
       var userCredential = await _authServices.signUpUser(
         name: _nameController.text,
         email: _emailController.text,
-        password: "12345678", // Default password, should be changed
+        password: "12345678",
       );
 
       if (userCredential != null) {
-        // String userId = userCredential.
         UserModel? userData =
             await UserServices().getUserByEmail(_emailController.text);
         String userId = userData!.email;
 
-        // Create a new user model based on the role selected
         UserModel userModel;
         if (_selectedRole == "Student") {
           userModel = Student(
@@ -138,7 +135,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
           );
         }
 
-        // Save user to the database
         String result = await _userServices.createUser(userModel);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(result)));
@@ -177,7 +173,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(
+                            value,
+                            style: TextStyle(color: textColor),
+                          ),
                         );
                       }).toList(),
                     ),
