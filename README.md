@@ -33,3 +33,14 @@ Admin can Manage Users, Check Users and View reports
 Student can mark their attendance, view attendance history , take quizes 
 
 
+## Installation
+To run this app locally, follow the steps below.
+- Prerequisites Flutter SDK (version 3.x or above) Install Flutter
+- Android Studio or Visual Studio Code for running the app on a physical device or emulator.
+- Dart version 2.12 or later.
+
+# Steps
+- Clone the repository 
+```sh
+git clone https://github.com/yourusername/your-repo.git
+```
