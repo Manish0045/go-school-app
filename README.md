@@ -60,3 +60,7 @@ To run this app locally, follow the steps below.
 ## Tech Stack
 Frameworks and Languages
 Frameworks: Flutter, Languages: Dart,
+
+# Screen Snapshots
+
+![](/ss_for_go_school/login_screen.png)
