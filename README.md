@@ -41,6 +41,22 @@ To run this app locally, follow the steps below.
 
 # Steps
 - Clone the repository 
-```sh
-git clone https://github.com/yourusername/your-repo.git
-```
+  ```sh
+  git clone https://github.com/Manish0045/go-school-app.git
+  ```
+- Navigate to the Project Directory
+  ```sh
+  cd go-school-app
+  ```
+- Install Dependencies Install the necessary Flutter packages by running the following command
+  ```sh
+  flutter pub get
+  ```
+- Run the App Ensure a device is connected or an emulator is running, then run the app with:
+  ```sh
+  flutter run
+  ```
+
+## Tech Stack
+Frameworks and Languages
+Frameworks: Flutter, Languages: Dart,
