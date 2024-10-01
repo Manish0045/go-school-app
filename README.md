@@ -63,4 +63,10 @@ Frameworks: Flutter, Languages: Dart,
 
 # Screen Snapshots
 
-![](/ss_for_go_school/login_screen.png)
+<img src="ss_for_go_school/option_screen.png" height="300" width="150" alt="Option screen"> <img src="ss_for_go_school/sign_in.png" height="300" width="150">
+<img src="ss_for_go_school/sign_up.png" height="300" width="150"> <img src="ss_for_go_school/student_home.png" height="300" width="150"> 
+<img src="ss_for_go_school/attendance_report.png" height="300" width="150"> <img src="ss_for_go_school/quiz_screen.png" height="300" width="150"> 
+<img src="ss_for_go_school/profile_screen.png" height="300" width="150"> <img src="ss_for_go_school/teacher_home.png" height="300" width="150"> 
+<img src="ss_for_go_school/students_list.png" height="300" width="150"> <img src="ss_for_go_school/create_quiz_form.png" height="300" width="150"> 
+<img src="ss_for_go_school/admin_home.png" height="300" width="150"> <img src="ss_for_go_school/manage_user.png" height="300" width="150"> 
+<img src="ss_for_go_school/manage_user_filter.png" height="300" width="150"> <img src="ss_for_go_school/add_new_user.png" height="300" width="150">
